@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Resolve version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $result = & scripts\Get-Version.ps1 -Ref "${{ github.ref }}"
+          "ProductVersion=$($result.ProductVersion)" >> $env:GITHUB_OUTPUT
+          "AssemblyVersion=$($result.AssemblyVersion)" >> $env:GITHUB_OUTPUT
+
+      - name: Build (Release)
+        run: >
+          dotnet build OverTheAir.sln -c Release
+          -p:Version=${{ steps.version.outputs.ProductVersion }}
+          -p:AssemblyVersion=${{ steps.version.outputs.AssemblyVersion }}
+          -p:FileVersion=${{ steps.version.outputs.AssemblyVersion }}
+
+      - name: Install WiX toolset
+        run: dotnet tool install --global wix --version 5.0.2
+
+      - name: Build the installer
+        shell: pwsh
+        run: |
+          scripts\Build-Installer.ps1 -Configuration Release -Version "${{ steps.version.outputs.ProductVersion }}"
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" `
+            "OverTheAir.Setup\bin\OverTheAirSetup.exe" `
+            "OverTheAir.Setup\bin\OverTheAir.msi" `
+            --title "OverTheAir ${{ steps.version.outputs.ProductVersion }}" `
+            --generate-notes

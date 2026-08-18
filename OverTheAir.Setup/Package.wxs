@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Package Name="OverTheAir"
+           Manufacturer="OverTheAir"
+           Version="$(ProductVersion)"
+           UpgradeCode="9C8F58C4-7C98-4958-9427-2D9AA1D3C71E"
+           Scope="perUser"
+           Compressed="yes">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of OverTheAir is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="app.ico" SourceFile="$(IconFile)" />
+    <Property Id="ARPPRODUCTICON" Value="app.ico" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="INSTALLFOLDER" Name="OverTheAir" />
+    </StandardDirectory>
+
+    <ComponentGroup Id="ApplicationFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(BinDir)\**" />
+    </ComponentGroup>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ShortcutFolder" Name="OverTheAir" />
+    </StandardDirectory>
+
+    <Component Id="StartMenuShortcut" Directory="ShortcutFolder"
+               Guid="50592AFD-023D-42D5-AD3F-72B7C03F55E8">
+
+      <Shortcut Id="ApplicationShortcut"
+                Name="OverTheAir"
+                Description="Hello World over-the-air update template"
+                Target="[INSTALLFOLDER]OverTheAir.exe"
+                WorkingDirectory="INSTALLFOLDER"
+                Icon="app.ico" />
+
+      <RemoveFolder Id="RemoveShortcutFolder" Directory="ShortcutFolder" On="uninstall" />
+
+      <RegistryValue Root="HKCU"
+                     Key="Software\OverTheAir\Install"
+                     Name="Installed"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+    </Component>
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="ApplicationFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+
+  </Package>
+</Wix>

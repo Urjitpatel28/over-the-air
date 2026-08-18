@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+
+  <Bundle Name="OverTheAir"
+          Manufacturer="OverTheAir"
+          Version="$(ProductVersion)"
+          UpgradeCode="53E9D4F1-3B8C-47D0-8F2A-A10640571D4E"
+          IconSourceFile="$(IconFile)"
+          Compressed="yes">
+
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication
+          Theme="rtfLicense"
+          LicenseFile="$(AssetsDir)\License.rtf"
+          SuppressOptionsUI="yes"
+          ShowVersion="yes" />
+    </BootstrapperApplication>
+
+    <Chain>
+      <MsiPackage Id="OverTheAirMsi"
+                  SourceFile="$(MsiPath)"
+                  Compressed="yes"
+                  Visible="no"
+                  ForcePerMachine="no" />
+    </Chain>
+
+  </Bundle>
+</Wix>

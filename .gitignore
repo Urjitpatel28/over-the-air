@@ -1,0 +1,13 @@
+bin/
+obj/
+*.user
+*.suo
+.vs/
+OverTheAir.Setup/bin/
+*.msi
+*.wixpdb
+*.wixobj
+*.exe
+!OverTheAir/**/*.exe
+.DS_Store
+Thumbs.db
