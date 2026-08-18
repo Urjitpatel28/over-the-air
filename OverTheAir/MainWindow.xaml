@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock Text="Hello World"
+            <TextBlock Text="Hello World! from github"
                        FontSize="28"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center" />
